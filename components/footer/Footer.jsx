@@ -1,74 +1,39 @@
 "use client";
 
-import Link from "next/link";
-import { FaInstagram, FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
-import { useRef, useEffect } from "react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 
-gsap.registerPlugin(ScrollTrigger);
-
-export default function Footer() {
-  const footerRef = useRef(null);
-  const titleRef = useRef(null);
-  const buttonRef = useRef(null);
-  const iconsRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 80%",
-        }
-      });
-
-      tl.from(titleRef.current, {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out"
-      })
-      .from(buttonRef.current, {
-        y: 30,
-        opacity: 0,
-        duration: 0.6,
-        ease: "power3.out"
-      }, "-=0.4")
-      .from(iconsRef.current.children, {
-        y: 20,
-        opacity: 0,
-        stagger: 0.15,
-        duration: 0.5,
-        ease: "power3.out"
-      }, "-=0.3");
-    }, footerRef);
-
-    return () => ctx.revert();
-  }, []);
-
+export default function FooterMinimal() {
   return (
-    <footer ref={footerRef} className="w-full flex items-center justify-center">
-      <div className="w-full max-w-[1400px] px-12 flex flex-col items-center  text-center font-sans">
+    <footer className="w-full bg-bg py-16 md:py-24 px-8 border-t border-primary/10">
+      <div className="max-w-[1600px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-12 font-ui text-sm uppercase tracking-widest text-primary">
         
-        <h2 ref={titleRef} className="text-3xl font-semibold">
-          Preserving your story. Reach out when the moment feels right.
-        </h2>
+        {/* Brand / Tagline */}
+        <div className="col-span-2 md:col-span-2">
+          <h3 className="font-display text-2xl mb-4 text-primary">Studio Name</h3>
+          <p className="text-primary/70 max-w-sm text-xs md:text-sm">Crafting cinematic wedding films with a focus on raw emotion.</p>
+        </div>
 
+        {/* Links Column */}
+        <div className="flex flex-col gap-3 text-xs md:text-sm">
+          <span className="text-secondary mb-2">Navigation</span>
+          <a href="about" className="hover:text-secondary">About</a>
+          <a href="portfolio" className="hover:text-secondary">Portfolio</a>
+        </div>
 
-        <div ref={iconsRef} className="flex gap-5 mt-6 text-2xl items-center">
-          <a href="https://instagram.com" target="_blank" className="hover:opacity-80">
-            <FaInstagram />
-          </a>
+        {/* Contact Column */}
+        <div className="flex flex-col gap-3 text-xs md:text-sm">
+          <span className="text-secondary mb-2">Contact</span>
+          <a href="tel:6386760485" className="hover:text-secondary">+91 6386760485</a>
+          <a href="mailto:contact@email.com" className="hover:text-secondary">Email</a>
+        </div>
 
-          <a href="https://wa.me/916386760485" target="_blank" className="hover:opacity-80">
-            <FaWhatsapp />
-          </a>
-
-          <a href="tel:6386760485" className="flex items-center gap-2 text-sm tracking-wide hover:opacity-80">
-            <FaPhoneAlt className="text-xl" />
-            6386760485
-          </a>
+        {/* Social Column */}
+        <div className="flex flex-col gap-3 text-xs md:text-sm">
+          <span className="text-secondary mb-2">Social</span>
+          <div className="flex gap-4 text-lg">
+            <a href="https://instagram.com" className="hover:text-secondary"><FaInstagram /></a>
+            <a href="https://wa.me/916386760485" className="hover:text-secondary"><FaWhatsapp /></a>
+          </div>
         </div>
 
       </div>

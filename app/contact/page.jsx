@@ -1,9 +1,9 @@
-import ContactForm from "@/components/contact/ContactForm";
+import ContactPage from "@/components/contact/ContactPage";
 
 export default function Contact() {
   return (
-    <section className="p-10 grid place-items-center">
-      <ContactForm />
+    <section className=" grid place-items-center">
+      <ContactPage />
     </section>
   );
 }
