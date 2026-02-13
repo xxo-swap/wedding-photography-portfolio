@@ -21,6 +21,5 @@ export default function Home() {
       <FeaturedSection couples={featuredWeddings} />
       <TestimonialSection TestimonialCouples={testimonials} />
     </>
-
   );
 }

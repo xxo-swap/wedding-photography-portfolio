@@ -1,85 +1,110 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { Flip } from "gsap/Flip";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+import { gsap, Flip } from "@/lib/gsap";
 import heroImages from "../data";
 
-gsap.registerPlugin(Flip, ScrollTrigger);
+// Simple debounce helper
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
 
 export default function Hero() {
   const galleryRef = useRef(null);
 
   useEffect(() => {
-  const galleryEl = galleryRef.current;
-  const items = galleryEl.querySelectorAll("div.relative");
+    const galleryEl = galleryRef.current;
+    if (!galleryEl) return;
+    
+    const items = galleryEl.querySelectorAll("div.relative");
+    if (!items.length) return;
 
-  ScrollTrigger.matchMedia({
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
 
-    // DESKTOP
-    "(min-width: 768px)": () => {
-      let flipCtx;
+      // DESKTOP
+      mm.add("(min-width: 768px)", () => {
+        let flipCtx;
+        let flipTimeline;
 
-      const createFlip = () => {
-        flipCtx?.revert();
+        const createFlip = () => {
+          if (flipCtx) flipCtx.revert();
+          if (flipTimeline) {
+            flipTimeline.scrollTrigger?.kill();
+            flipTimeline.kill();
+          }
 
-        flipCtx = gsap.context(() => {
-          galleryEl.classList.add("final-layout");
-          const state = Flip.getState(items);
-          galleryEl.classList.remove("final-layout");
+          flipCtx = gsap.context(() => {
+            galleryEl.classList.add("final-layout");
+            const state = Flip.getState(items);
+            galleryEl.classList.remove("final-layout");
 
-          const flip = Flip.to(state, {
-            ease: "expo.inOut",
-            simple: true
-          });
+            const flip = Flip.to(state, {
+              ease: "expo.inOut",
+              simple: true
+            });
 
-          gsap.timeline({
-            scrollTrigger: {
-              trigger: galleryEl,
-              start: "center center",
-              end: "+=100%",
-              scrub: true,
-              pin: galleryEl.parentNode
-            }
-          }).add(flip);
-        }, galleryEl);
-      };
+            flipTimeline = gsap.timeline({
+              scrollTrigger: {
+                trigger: galleryEl,
+                start: "center center",
+                end: "+=100%",
+                scrub: true,
+                pin: galleryEl.parentNode
+              }
+            }).add(flip);
+          }, galleryEl);
+        };
 
-      createFlip();
-      window.addEventListener("resize", createFlip);
+        createFlip();
+        
+        const resizeHandler = debounce(createFlip, 250);
+        window.addEventListener("resize", resizeHandler);
 
-      return () => {
-        window.removeEventListener("resize", createFlip);
-        flipCtx?.revert();
-      };
-    },
-
-    // MOBILE
-    "(max-width: 767px)": () => {
-      // Simpler, cheaper animation
-      gsap.from(items, {
-        y: 60,
-        opacity: 0,
-        stagger: 0.08,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: galleryEl,
-          start: "top 80%",
-          end: "bottom top",
-          scrub: false
-        }
+        return () => {
+          window.removeEventListener("resize", resizeHandler);
+          if (flipTimeline) {
+            flipTimeline.scrollTrigger?.kill();
+            flipTimeline.kill();
+          }
+          if (flipCtx) flipCtx.revert();
+        };
       });
-    }
 
-  });
+      // MOBILE
+      mm.add("(max-width: 767px)", () => {
+        const tl = gsap.from(items, {
+          y: 60,
+          opacity: 0,
+          stagger: 0.08,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: galleryEl,
+            start: "top 80%",
+            end: "bottom top",
+          }
+        });
 
-  return () => ScrollTrigger.getAll().forEach(t => t.kill());
-}, []);
+        return () => {
+          tl.scrollTrigger?.kill();
+          tl.kill();
+        };
+      });
 
+      return () => mm.revert();
+    }, galleryEl);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section className="relative w-full ">
@@ -100,30 +125,27 @@ export default function Hero() {
       >
         {heroImages.map((img, index) => {
           const gridClasses = [
-            "row-start-1 row-end-3 col-start-1 col-end-2 ", // 1
-            "row-start-1 row-end-2 col-start-2 col-end-3", // 2
-            "row-start-2 row-end-4 col-start-2 col-end-3", // 3
-            "row-start-1 row-end-3 col-start-3 col-end-4", // 4
-            "row-start-3 row-end-4 col-start-1 col-end-2", // 5
-            "row-start-3 row-end-4 col-start-3 col-end-4", // 6
-            "row-start-4 row-end-5 col-start-1 col-end-2", // 7
-            "row-start-4 row-end-5 col-start-2 col-end-3", // 8
-            "row-start-4 row-end-5 col-start-3 col-end-4", // 9
+            "row-start-1 row-end-3 col-start-1 col-end-2 ",
+            "row-start-1 row-end-2 col-start-2 col-end-3",
+            "row-start-2 row-end-4 col-start-2 col-end-3",
+            "row-start-1 row-end-3 col-start-3 col-end-4",
+            "row-start-3 row-end-4 col-start-1 col-end-2",
+            "row-start-3 row-end-4 col-start-3 col-end-4",
+            "row-start-4 row-end-5 col-start-1 col-end-2",
+            "row-start-4 row-end-5 col-start-2 col-end-3",
+            "row-start-4 row-end-5 col-start-3 col-end-4",
           ];
 
           return (
             <div
               key={img.id}
-              className={`
-                relative
-                overflow-hidden
-                ${gridClasses[index]}
-              `}
+              className={`relative overflow-hidden ${gridClasses[index]}`}
             >
               <Image
                 src={img.url}
                 alt={img.alt}
                 fill
+                sizes="33vw"
                 className="object-cover"
               />
             </div>

@@ -1,19 +1,26 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap"; // ✅ central import
 
 export default function ContactPage() {
-  const formRef = useRef(null);
+  const containerRef = useRef(null);
   const infoRef = useRef(null);
   const dropdownRef = useRef(null);
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState("₹8,000 — ₹12,000");
 
+  const options = ["₹8,000 — ₹12,000", "₹12,000 — ₹20,000", "₹20,000 +"];
+
+  // GSAP ANIMATIONS – SCOPED
   useEffect(() => {
+    if (!containerRef.current) return;
+
     const ctx = gsap.context(() => {
-      gsap.from(".reveal-text", {
+      const elements = containerRef.current.querySelectorAll(".reveal-text");
+
+      gsap.from(elements, {
         y: 40,
         opacity: 0,
         duration: 1,
@@ -21,31 +28,40 @@ export default function ContactPage() {
         ease: "power3.out",
       });
 
-      gsap.from(infoRef.current, {
-        opacity: 0,
-        x: -20,
-        duration: 1.2,
-        delay: 0.3,
-      });
-    });
+      if (infoRef.current) {
+        gsap.from(infoRef.current, {
+          opacity: 0,
+          x: -20,
+          duration: 1.2,
+          delay: 0.3,
+        });
+      }
+    }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
+  // CLICK OUTSIDE DROPDOWN
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      if (
+        dropdownRef.current &&
+        e.target instanceof Node &&
+        !dropdownRef.current.contains(e.target)
+      ) {
         setOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const options = ["₹8,000 — ₹12,000", "₹12,000 — ₹20,000", "₹20,000 +"];
-
   return (
-    <main className="bg-bg min-h-screen text-text selection:bg-primary selection:text-bg">
+    <main
+      ref={containerRef}
+      className="bg-bg min-h-screen text-text selection:bg-primary selection:text-bg"
+    >
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2">
         {/* LEFT SIDE */}
         <section
@@ -68,13 +84,12 @@ export default function ContactPage() {
                 Inquiries
               </p>
               <a
-                href="mailto:hello@yourstudio.com"
+                href="mailto:support@swastikpictures.com"
                 className="font-display text-2xl hover:text-accent transition-colors"
               >
                 support@swastikpictures.com
               </a>
             </div>
-
             <div>
               <p className="font-ui text-xs uppercase tracking-[0.2em] text-secondary mb-2">
                 Studio
@@ -84,7 +99,6 @@ export default function ContactPage() {
                 Florence, Italy
               </p>
             </div>
-
             <div className="flex gap-6 pt-4">
               {["Instagram", "Vimeo", "Pinterest"].map((social) => (
                 <a
@@ -101,7 +115,7 @@ export default function ContactPage() {
 
         {/* RIGHT SIDE */}
         <section className="p-8 md:p-16 lg:p-24 bg-bg">
-          <form ref={formRef} className="space-y-12">
+          <form className="space-y-12">
             {/* Names */}
             <div className="group relative">
               <label className="font-ui text-xs uppercase tracking-widest text-secondary group-focus-within:text-accent transition-colors">
@@ -126,7 +140,6 @@ export default function ContactPage() {
                   className="w-full bg-transparent border-b border-primary/20 py-4 font-body text-xl focus:outline-none focus:border-primary transition-colors placeholder:text-primary/20"
                 />
               </div>
-
               <div className="group relative">
                 <label className="font-ui text-xs uppercase tracking-widest text-secondary group-focus-within:text-accent transition-colors">
                   Location
@@ -139,14 +152,13 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Custom Investment Dropdown */}
+            {/* Investment Dropdown */}
             <div ref={dropdownRef} className="relative">
               <label className="font-ui text-xs uppercase tracking-widest text-secondary">
                 Investment Range
               </label>
-
               <div
-                onClick={() => setOpen(!open)}
+                onClick={() => setOpen((prev) => !prev)}
                 className="w-full border-b border-primary/20 py-4 font-body text-xl cursor-pointer flex justify-between items-center transition-colors hover:border-primary"
               >
                 {selected}
@@ -158,7 +170,6 @@ export default function ContactPage() {
                   ▾
                 </span>
               </div>
-
               <div
                 className={`absolute left-0 w-full mt-2 bg-bg border border-primary/10 shadow-xl overflow-hidden transition-all duration-300 ${
                   open ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
@@ -186,7 +197,7 @@ export default function ContactPage() {
               </label>
               <textarea
                 rows={5}
-                placeholder="What does your love feel like? What are you most excited for?"
+                placeholder="What does your love feel like?"
                 className="w-full bg-transparent border-b border-primary/20 py-4 font-body text-xl focus:outline-none focus:border-primary transition-colors placeholder:text-primary/20 resize-none"
               />
             </div>

@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-import MotionPathPlugin from "gsap/MotionPathPlugin";
-
-gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 export default function ScrollPathSection() {
     const sectionRef = useRef(null);
@@ -15,78 +11,77 @@ export default function ScrollPathSection() {
     useEffect(() => {
         if (!sectionRef.current || !pathRef.current || !ballRef.current) return;
 
-        // Reset and Prep
-        gsap.set(ballRef.current, {
-            opacity: 0,
-            transformOrigin: "50% 50%",
-            force3D: true // Force GPU
-        });
-
-        // 1. BALL MOVEMENT WITH DELAY (SCRUB LAG)
-        const mainTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top top",
-                end: "bottom bottom",
-                // 1 second lag creates a smooth, delayed follow effect
-                // This makes mobile movement feel much less jittery.
-                scrub: 1,
-                anticipatePin: 1,
-            },
-        });
-
-        mainTl.to(ballRef.current, {
-            motionPath: {
-                path: pathRef.current,
-                align: pathRef.current,
-                alignOrigin: [0.5, 0.5],
-                autoRotate: true,
-            },
-            keyframes: {
-                "0%": { opacity: 0 },
-                "10%": { opacity: 1 },
-                "90%": { opacity: 1 },
-                "100%": { opacity: 0 },
-            },
-            ease: "none",
-        });
-
-        // 2. BREAKPOINT ANIMATION
-        gsap.utils.toArray(".breakpoint").forEach((point) => {
-            ScrollTrigger.create({
-                trigger: point,
-                start: "top bottom",
-                end: "bottom center",
-                onToggle: (self) => {
-                    if (self.isActive) {
-                        gsap.to(ballRef.current, { attr: { rx: 12, ry: 6 }, duration: 0.4 });
-                    } else {
-                        gsap.to(ballRef.current, { attr: { rx: 10, ry: 5 }, duration: 0.3 });
-                    }
-                }
+        const ctx = gsap.context(() => {
+            // Reset ball
+            gsap.set(ballRef.current, {
+                opacity: 0,
+                transformOrigin: "50% 50%",
+                force3D: true,
             });
-        });
 
-        // 3. IMAGE SKEW
-        gsap.utils.toArray(".image-square").forEach((el) => {
-            gsap.fromTo(el,
-                { skewX: 0 },
-                {
-                    skewX: -6,
-                    force3D: true,
-                    scrollTrigger: {
-                        trigger: el,
-                        start: "top bottom",
-                        end: "bottom top",
-                        scrub: true,
+            // 1. Ball follows motion path
+            const mainTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1,
+                    anticipatePin: 1,
+                },
+            });
+
+            mainTl.to(ballRef.current, {
+                motionPath: {
+                    path: pathRef.current,
+                    align: pathRef.current,
+                    alignOrigin: [0.5, 0.5],
+                    autoRotate: true,
+                },
+                keyframes: {
+                    "0%": { opacity: 0 },
+                    "10%": { opacity: 1 },
+                    "90%": { opacity: 1 },
+                    "100%": { opacity: 0 },
+                },
+                ease: "none",
+            });
+
+            // 2. Breakpoint animation – scoped to sectionRef
+            gsap.utils.toArray(".breakpoint", sectionRef.current).forEach((point) => {
+                ScrollTrigger.create({
+                    trigger: point,
+                    start: "top bottom",
+                    end: "bottom center",
+                    onToggle: (self) => {
+                        if (!ballRef.current) return;
+                        gsap.to(ballRef.current, {
+                            attr: { rx: self.isActive ? 12 : 10, ry: self.isActive ? 6 : 5 },
+                            duration: self.isActive ? 0.4 : 0.3,
+                        });
                     },
-                }
-            );
-        });
+                });
+            });
 
-        return () => {
-            ScrollTrigger.getAll().forEach((t) => t.kill());
-        };
+            // 3. Image skew – scoped
+            gsap.utils.toArray(".image-square", sectionRef.current).forEach((el) => {
+                gsap.fromTo(
+                    el,
+                    { skewX: 0 },
+                    {
+                        skewX: -6,
+                        force3D: true,
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true,
+                        },
+                    }
+                );
+            });
+        }, sectionRef); // 👈 EVERYTHING SCOPED
+
+        return () => ctx.revert(); // ✅ CLEAN ONLY WHAT THIS COMPONENT CREATED
     }, []);
 
     return (

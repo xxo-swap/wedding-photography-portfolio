@@ -1,49 +1,57 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import Lenis from "lenis";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { ScrollTrigger } from "@/lib/gsap";
 
 export default function ScrollWrapper({ children }) {
-  const scrollRef = useRef(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    // 1️⃣ Initialize Lenis
+    ScrollTrigger.refresh();
+  }, [pathname]);
+
+  useEffect(() => {
     const lenis = new Lenis({
-      duration: 1,           // easing duration
-    easing: (t) => t * (2 - t),          // linear easing
+      duration: 1,
+      easing: (t) => t * (2 - t),
       smooth: true,
-      direction: 'vertical', // vertical scroll
     });
 
-    // 2️⃣ RAF loop
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
 
-    // 3️⃣ Sync GSAP ScrollTrigger with Lenis
-    lenis.on('scroll', () => {
-      ScrollTrigger.update();
+    lenis.on("scroll", ScrollTrigger.update);
+
+    ScrollTrigger.scrollerProxy(document.body, {
+      scrollTop(value) {
+        if (arguments.length) {
+          lenis.scrollTo(value);
+        } else {
+          return lenis.scroll;
+        }
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      },
     });
 
-    // Optional: handle resize
-    window.addEventListener('resize', () => lenis.resize());
+    ScrollTrigger.addEventListener("refresh", () => lenis.resize());
+    ScrollTrigger.refresh();
 
-    // Cleanup
     return () => {
       lenis.destroy();
-      window.removeEventListener('resize', () => lenis.resize());
-    };
+      ScrollTrigger.removeEventListener("refresh", () => lenis.resize()); };
   }, []);
 
-  return (
-    <div ref={scrollRef}>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }

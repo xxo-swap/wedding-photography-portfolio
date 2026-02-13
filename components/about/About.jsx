@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import gsap from "gsap";
+import {gsap} from "@/lib/gsap";
 
 
 export default function AboutPage() {
@@ -11,7 +11,7 @@ export default function AboutPage() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Fade in team members on scroll
+    // Fade in team members on scroll
       gsap.utils.toArray(".team-card").forEach((card, i) => {
         gsap.from(card, {
           y: 60,
