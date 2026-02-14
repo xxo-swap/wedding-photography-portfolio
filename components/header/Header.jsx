@@ -38,6 +38,7 @@ export default function Header() {
           start: "top top",
           end: "+=50",
           scrub: true,
+          id: "header-bg",
         },
       });
 
@@ -45,6 +46,22 @@ export default function Header() {
 
     return () => ctx.revert();
   }, []);
+
+  // Kill active ScrollTriggers before client-side navigation to avoid pin/spacer race conditions
+  const handleNav = () => {
+    try {
+      ScrollTrigger.getAll().forEach((st) => {
+        try {
+          st.kill(true);
+        } catch (e) {
+          // ignore
+        }
+      });
+      ScrollTrigger.refresh();
+    } catch (err) {
+      console.warn("Header: failed to kill ScrollTriggers", err);
+    }
+  };
 
   return (
     <header
@@ -55,7 +72,8 @@ export default function Header() {
         <div className="flex-1 flex justify-start space-x-8">
           <Link
             href="/about"
-            className="font-ui text-xs uppercase tracking-[0.2em] text-primary hover:text-accent transition-colors"
+            onClick={handleNav}
+            className="font-ui text-xs uppercase md:tracking-[0.2em] text-primary hover:text-accent transition-colors"
           >
             About
           </Link>
@@ -64,7 +82,8 @@ export default function Header() {
         <div className="flex-1 flex justify-center">
           <Link
             href="/"
-            className="font-display text-2xl md:text-3xl text-primary tracking-tighter"
+            onClick={handleNav}
+            className="font-display text-xl md:text-3xl text-primary tracking-tighter"
           >
             Wedding <span className="italic">Studio</span>
           </Link>
@@ -73,7 +92,8 @@ export default function Header() {
         <div className="flex-1 flex justify-end">
           <Link
             href="/contact"
-            className="font-ui text-xs uppercase tracking-[0.2em] text-primary hover:text-accent transition-colors"
+            onClick={handleNav}
+            className="font-ui text-xs uppercase md:tracking-[0.2em] text-primary hover:text-accent transition-colors"
           >
             Contact
           </Link>

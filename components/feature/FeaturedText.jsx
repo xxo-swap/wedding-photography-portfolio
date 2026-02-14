@@ -22,7 +22,6 @@ export default function FeaturedText() {
           start: "top 40%",
           end: "bottom 40%",
           scrub: 1,
-          markers: true,
         },
       });
 
@@ -46,12 +45,12 @@ export default function FeaturedText() {
   return (
     <section
       ref={containerRef}
-      className="h-[100vh] flex flex-col items-center justify-center gap-8 md:gap-10 overflow-hidden select-none bg-bg"
+      className="h-[100vh] flex flex-col items-center justify-center gap-5 md:gap-10 overflow-hidden select-none bg-bg"
     >
       {/* Top Line */}
       <div
         ref={top}
-        className="text-4xl md:text-6xl uppercase whitespace-nowrap flex gap-12 font-display text-primary italic opacity-80"
+        className="text-lg md:text-6xl uppercase whitespace-nowrap flex gap-12 font-display text-primary italic opacity-80"
       >
         {Array(5)
           .fill("Every couple is unique in their own way.")
@@ -65,7 +64,7 @@ export default function FeaturedText() {
       {/* Middle Line */}
       <div
         ref={middle}
-        className="text-4xl md:text-8xl uppercase leading-none whitespace-nowrap flex gap-16 font-display italic font-semibold text-primary"
+        className="text-3xl md:text-8xl uppercase leading-none whitespace-nowrap flex gap-16 font-display italic font-semibold text-primary"
       >
         {Array(5)
           .fill("Featured Stories.")
@@ -79,7 +78,7 @@ export default function FeaturedText() {
       {/* Bottom Line */}
       <div
         ref={bottom}
-        className="text-sm md:text-base uppercase tracking-[0.5em] whitespace-nowrap flex gap-20 font-display text-secondary font-medium"
+        className="text-[0.5rem] md:text-base uppercase tracking-[0.5em] whitespace-nowrap flex gap-20 font-display text-secondary font-medium"
       >
         {Array(5)
           .fill("Here are stories embracing their best moments.")

@@ -2,112 +2,81 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { gsap, Flip } from "@/lib/gsap";
+import { gsap, Flip, ScrollTrigger } from "@/lib/gsap";
 import heroImages from "../data";
 
-// Simple debounce helper
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
 
 export default function Hero() {
+  const wrapperRef = useRef(null);
   const galleryRef = useRef(null);
 
   useEffect(() => {
     const galleryEl = galleryRef.current;
-    if (!galleryEl) return;
-    
+    const wrapperEl = wrapperRef.current;
+    if (!galleryEl || !wrapperEl) return;
+
     const items = galleryEl.querySelectorAll("div.relative");
-    if (!items.length) return;
 
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
+    // create matchMedia instance so we can properly revert it on unmount
+    const mm = gsap.matchMedia();
 
-      // DESKTOP
-      mm.add("(min-width: 768px)", () => {
-        let flipCtx;
-        let flipTimeline;
+    // 1. Create the context (scoped to wrapperRef)
+    let ctx = gsap.context(() => {
+        // Capture Flip State (desktop)
+        galleryEl.classList.add("final-layout");
+        const state = Flip.getState(items);
+        galleryEl.classList.remove("final-layout");
 
-        const createFlip = () => {
-          if (flipCtx) flipCtx.revert();
-          if (flipTimeline) {
-            flipTimeline.scrollTrigger?.kill();
-            flipTimeline.kill();
-          }
-
-          flipCtx = gsap.context(() => {
-            galleryEl.classList.add("final-layout");
-            const state = Flip.getState(items);
-            galleryEl.classList.remove("final-layout");
-
-            const flip = Flip.to(state, {
-              ease: "expo.inOut",
-              simple: true
-            });
-
-            flipTimeline = gsap.timeline({
-              scrollTrigger: {
-                trigger: galleryEl,
-                start: "center center",
-                end: "+=100%",
-                scrub: true,
-                pin: galleryEl.parentNode
-              }
-            }).add(flip);
-          }, galleryEl);
-        };
-
-        createFlip();
-        
-        const resizeHandler = debounce(createFlip, 250);
-        window.addEventListener("resize", resizeHandler);
-
-        return () => {
-          window.removeEventListener("resize", resizeHandler);
-          if (flipTimeline) {
-            flipTimeline.scrollTrigger?.kill();
-            flipTimeline.kill();
-          }
-          if (flipCtx) flipCtx.revert();
-        };
-      });
-
-      // MOBILE
-      mm.add("(max-width: 767px)", () => {
-        const tl = gsap.from(items, {
-          y: 60,
-          opacity: 0,
-          stagger: 0.08,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: galleryEl,
-            start: "top 80%",
-            end: "bottom top",
-          }
+        const flipAnim = Flip.to(state, {
+          ease: "expo.inOut",
+          simple: true,
         });
 
+        // Create Timeline (pin) — keep reference so we can clean it up when breakpoint changes
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: wrapperEl, // Use the wrapper
+            start: "center center",
+            end: "+=100%",
+            scrub: true,
+            pin: true, // Pin 
+            invalidateOnRefresh: true,
+            id: "desktop-flip",
+          },
+        });
+        tl.add(flipAnim);
+
+        // IMPORTANT: return a cleanup function for matchMedia so this animation & pin are removed
         return () => {
-          tl.scrollTrigger?.kill();
-          tl.kill();
+          try {
+            if (tl) tl.kill();
+            if (flipAnim && typeof flipAnim.kill === "function") flipAnim.kill();
+            // ensure any leftover ScrollTrigger with the same id is removed
+            const st = ScrollTrigger.getById && ScrollTrigger.getById("desktop-flip");
+            if (st) st.kill(true);
+            // remove any empty pin-spacer created by this trigger
+            document.querySelectorAll('.pin-spacer').forEach(spacer => {
+              try {
+                if (!spacer.firstElementChild) spacer.remove();
+              } catch(e) {/* ignore */}
+            });
+          } catch (err) {
+            /* swallow cleanup errors */
+          }
         };
-      });
+      ;
 
-      return () => mm.revert();
-    }, galleryEl);
+ ;
+    }, wrapperRef); // Scope to galleryEl
 
-    return () => ctx.revert();
+    // 2. Cleanup: revert gsap.context *and* matchMedia so pinned elements / scrollTriggers are removed
+    return () => {
+      ctx.revert();
+    };
   }, []);
 
   return (
-    <section className="relative w-full ">
+    <section ref={wrapperRef} className="relative w-full overflow-hidden">
       <div
         ref={galleryRef}
         className="
@@ -120,12 +89,11 @@ export default function Hero() {
           w-full
           h-[100vh]
           px-[2vw]
-          transition-all
         "
       >
         {heroImages.map((img, index) => {
           const gridClasses = [
-            "row-start-1 row-end-3 col-start-1 col-end-2 ",
+            "row-start-1 row-end-3 col-start-1 col-end-2",
             "row-start-1 row-end-2 col-start-2 col-end-3",
             "row-start-2 row-end-4 col-start-2 col-end-3",
             "row-start-1 row-end-3 col-start-3 col-end-4",

@@ -1,9 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { gsap  } from "@/lib/gsap";
-
-
+import { gsap } from "@/lib/gsap";
+import Link from "next/link";
 
 const HeartIcon = () => (
   <svg
@@ -34,7 +33,7 @@ export default function FeaturedCouple({ couple }) {
           scrub: true,
         },
       });
-    }, containerRef); 
+    }, containerRef);
 
     return () => {
       ctx.revert();
@@ -42,10 +41,13 @@ export default function FeaturedCouple({ couple }) {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative flex items-center justify-between gap-12 h-[80vh] bg-bg px-12">
+    <div
+      ref={containerRef}
+      className="mx-auto relative flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 h-auto md:h-[80vh] bg-bg px-6 md:px-12 py-12"
+    >
       <div
         ref={outerWrapper}
-        className="relative w-[60vw] h-[50vh] overflow-hidden rounded-sm bg-primary/10"
+        className="relative mx-auto w-full md:w-[60vw] h-[40vh] md:h-[50vh] overflow-hidden rounded-sm bg-primary/10"
       >
         <div
           ref={featureImageRef}
@@ -56,24 +58,25 @@ export default function FeaturedCouple({ couple }) {
             alt={`${couple.brideName} & ${couple.groomName}`}
             fill
             priority={couple.featured} // Optimization for featured images
-            className="object-cover grayscale group-hover:grayscale-0 transition duration-500 ease-in-out"
+            className="object-cover grayscale  group-hover:grayscale-0 transition duration-500 ease-in-out"
           />
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 w-[30vw]">
-        <span className="font-ui text-xs uppercase tracking-[0.3em] text-secondary">
+      <div className="relative flex flex-col gap-3 md:gap-5 w-full md:w-[30vw] flex-wrap">
+        <span className="font-ui text-xs uppercase tracking-[0.2em] text-center md:text-start text-secondary">
           Featured Story
         </span>
-        <h3 className="font-display text-5xl md:text-6xl text-primary leading-tight flex items-center gap-4">
+        <h3 className="font-display text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-primary leading-tight flex items-center justify-center md:justify-start gap-4">
           {couple.brideName}
           {couple.connectingIcon ? <HeartIcon /> : " + "}
           {couple.groomName}
         </h3>
         <div className="flex justify-start">
-          <button className="font-ui text-xs uppercase tracking-widest border border-primary text-primary px-8 py-4 rounded-full hover:bg-primary hover:text-bg transition-all duration-300">
+          <button className="font-ui text-xs uppercase tracking-widest border border-primary text-primary px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-primary hover:text-bg transition-all duration-300 w-full md:w-auto text-center">
             View Story
           </button>
+
         </div>
       </div>
     </div>

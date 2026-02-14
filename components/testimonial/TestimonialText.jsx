@@ -40,15 +40,29 @@ export default function TestimonialText() {
       if (splitHeading) splitHeading.revert();
       if (splitPara) splitPara.revert();
 
-      // 4. Remove any pin-spacer elements manually
-      const pinSpacers = document.querySelectorAll('.pin-spacer');
-      pinSpacers.forEach(spacer => {
-        if (spacer.contains(sectionRef.current)) {
+      // 4. Remove any pin-spacer elements manually (defensive - avoid DOM removeChild races)
+      const pinSpacers = Array.from(document.querySelectorAll('.pin-spacer'));
+      pinSpacers.forEach((spacer) => {
+        try {
+          // only handle spacers that contain our section
+          if (!sectionRef.current || !spacer.contains(sectionRef.current)) return;
           const parent = spacer.parentNode;
+          if (!parent) return;
+
+          // move children out safely
           while (spacer.firstChild) {
-            parent.insertBefore(spacer.firstChild, spacer);
+            const child = spacer.firstChild;
+            if (!child) break;
+            // insertBefore may throw if DOM changed concurrently, so guard it
+            if (parent.contains(spacer)) parent.insertBefore(child, spacer);
+            else break;
           }
-          spacer.remove();
+
+          // remove spacer if still attached
+          if (parent.contains(spacer)) parent.removeChild(spacer);
+        } catch (err) {
+          // don't throw during unmount — just log for debugging
+          console.warn('TestimonialText: pin-spacer cleanup failed', err);
         }
       });
     };
@@ -70,17 +84,18 @@ export default function TestimonialText() {
         tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top top",
-            end: "+=1000",
+            start: "+=20% top",
+            end: "+=50%",
             scrub: true,
             pin: true,
             anticipatePin: 1,
+            
           },
         });
 
         tl.fromTo(
           splitHeading.chars,
-          { opacity: 0, y: 20 },
+          { opacity: .1, y: 0 },
           {
             opacity: 1,
             y: 0,
@@ -91,7 +106,7 @@ export default function TestimonialText() {
 
         tl.fromTo(
           splitPara.chars,
-          { opacity: 0, y: 15 },
+          { opacity: .1, y: 0  },
           {
             opacity: 1,
             y: 0,
@@ -115,19 +130,19 @@ export default function TestimonialText() {
   return (
     <section
       ref={sectionRef}
-      className="h-screen flex flex-col items-center justify-center text-center gap-4 overflow-hidden"
+      className="h-[70vh] md:h-screen flex flex-col items-center justify-center text-center gap-4 overflow-hidden"
       style={{ opacity: isReady ? 1 : 0 }}
     >
       <h1
         ref={headingRef}
-        className="text-5xl font-black uppercase tracking-wide whitespace-nowrap"
+        className="text-2xl  md:text-5xl font-black uppercase tracking-wide whitespace-nowrap"
       >
         Listen to their stories.
       </h1>
 
       <p
         ref={paraRef}
-        className="text-sm font-black uppercase tracking-wide max-w-[90vw]"
+        className="text-xs md:text-lg font-black uppercase tracking-wide max-w-[50ch] md:max-w-[90ch]"
       >
         Every wedding leaves a memory behind. Here&apos;s what our couples carried with them.
       </p>
