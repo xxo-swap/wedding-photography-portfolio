@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import Link from "next/link";
 
-const HeartIcon = () => (
+export const HeartIcon = () => (
   <svg
     viewBox="0 0 24 24"
     fill="currentColor"
@@ -40,45 +40,82 @@ export default function FeaturedCouple({ couple }) {
     };
   }, []);
 
+  const handleStoryNavigation = () => {
+    try {
+      ScrollTrigger.getAll().forEach((st) => {
+        try {
+          st.kill(true);
+        } catch (e) {
+          // ignore
+        }
+      });
+      ScrollTrigger.refresh();
+    } catch (err) {
+      console.warn("Story: failed to kill ScrollTriggers", err);
+    }
+  };
+
   return (
-    <div
+    <section
       ref={containerRef}
-      className="mx-auto relative flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 h-auto md:h-[80vh] bg-bg px-6 md:px-12 py-12"
+      className="relative w-full py-20 md:py-32 bg-gradient-to-br from-bg via-white to-primary/5"
     >
-      <div
-        ref={outerWrapper}
-        className="relative mx-auto w-full md:w-[60vw] h-[40vh] md:h-[50vh] overflow-hidden rounded-sm bg-primary/10"
-      >
-        <div
-          ref={featureImageRef}
-          className="group absolute inset-0 w-full h-[140%]"
-        >
-          <Image
-            src={couple.featuredImage} // Using chosen image
-            alt={`${couple.brideName} & ${couple.groomName}`}
-            fill
-            priority={couple.featured} // Optimization for featured images
-            className="object-cover grayscale  group-hover:grayscale-0 transition duration-500 ease-in-out"
-          />
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+        <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+          {/* IMAGE SIDE */}
+          <div
+            ref={outerWrapper}
+            className="relative w-full h-[420px] md:h-[600px] overflow-hidden rounded-xl shadow-xl"
+          >
+            <div
+              ref={featureImageRef}
+              className="absolute inset-0 h-[130%] w-full"
+            >
+              <Image
+                src={couple.featuredImage}
+                alt={`${couple.brideName} & ${couple.groomName}`}
+                fill
+                priority={couple.featured}
+                className="object-cover transition duration-700 ease-out hover:scale-105"
+              />
+            </div>
+
+            {/* Subtle overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+          </div>
+
+          {/* CONTENT SIDE */}
+          <div className="flex flex-col gap-6 text-center md:text-left">
+            <span className="font-ui text-xs tracking-[0.35em] uppercase text-secondary">
+              Featured Story
+            </span>
+
+            <h3 className="font-display text-3xl sm:text-5xl md:text-6xl leading-tight text-primary">
+              {couple.brideName}
+              <span className="mx-4 inline-block align-middle">
+                {couple.connectingIcon ? <HeartIcon /> : "&"}
+              </span>
+              {couple.groomName}
+            </h3>
+
+            <p className="max-w-lg mx-auto md:mx-0 text-sm md:text-base text-secondary leading-relaxed">
+              A celebration of love, elegance, and timeless moments. Explore
+              their journey, captured through carefully curated imagery and
+              unforgettable memories.
+            </p>
+
+            <div className="pt-4">
+              <Link
+                onClick={handleStoryNavigation}
+                href={`/story/${couple.slug}`}
+                className="inline-block font-ui text-xs tracking-widest uppercase border border-primary text-primary px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all duration-300"
+              >
+                View Story
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="relative flex flex-col gap-3 md:gap-5 w-full md:w-[30vw] flex-wrap">
-        <span className="font-ui text-xs uppercase tracking-[0.2em] text-center md:text-start text-secondary">
-          Featured Story
-        </span>
-        <h3 className="font-display text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-primary leading-tight flex items-center justify-center md:justify-start gap-4">
-          {couple.brideName}
-          {couple.connectingIcon ? <HeartIcon /> : " + "}
-          {couple.groomName}
-        </h3>
-        <div className="flex justify-start">
-          <button className="font-ui text-xs uppercase tracking-widest border border-primary text-primary px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-primary hover:text-bg transition-all duration-300 w-full md:w-auto text-center">
-            View Story
-          </button>
-
-        </div>
-      </div>
-    </div>
+    </section>
   );
 }

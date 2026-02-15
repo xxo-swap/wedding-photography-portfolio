@@ -16,8 +16,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Hero1 />
-      <ScrollPathSection />
+      {/* <Hero1 /> */}
+      {/* <ScrollPathSection /> */}
       <FeaturedSection couples={featuredWeddings} />
       <TestimonialSection TestimonialCouples={testimonials} />
     </>

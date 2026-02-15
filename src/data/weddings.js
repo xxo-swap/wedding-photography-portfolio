@@ -1,16 +1,14 @@
-import { generateSlug } from "../utils/slug";
-
 export const weddings = [
   {
-    slug: generateSlug("Shilpa", "Ankush"),
+    slug: "shilpa-ankush",
     brideName: "Shilpa",
     groomName: "Ankush",
     folder: "/client1",
     featured: true,
     featuredImage: "/client1/3.webp",
-    featuredAlt: "Shilpa and Ankush walking hand in hand during their sunset wedding ceremony",
+    featuredAlt:
+      "Shilpa and Ankush walking hand in hand during their sunset wedding ceremony",
     connectingIcon: true,
-    // --- GALLERY IMAGES WITH ALT TEXT ---
     images: [
       { src: "/client1/1.webp", alt: "Bride looking at her reflection in the mirror" },
       { src: "/client1/2.JPG", alt: "Groom adjusting his sherwani" },
@@ -28,19 +26,19 @@ export const weddings = [
       hasTestimonial: true,
       caption: "The most beautiful day of our lives!",
       coverImage: "/client1/7.jpg",
-      coverAlt: "Shilpa laughing during the wedding reception"
-    }
+      coverAlt: "Shilpa laughing during the wedding reception",
+    },
   },
   {
-    slug: generateSlug("Rakul", "Rahul"),
+    slug: "rakul-rahul",
     brideName: "Rakul",
     groomName: "Rahul",
     folder: "/client2",
     featured: true,
     featuredImage: "/client2/1.webp",
-    featuredAlt: "A candid portrait of Rakul and Rahul under a floral mandap",
+    featuredAlt:
+      "A candid portrait of Rakul and Rahul under a floral mandap",
     connectingIcon: true,
-    // --- GALLERY IMAGES WITH ALT TEXT ---
     images: [
       { src: "/client2/1.JPG", alt: "Bride getting ready" },
       { src: "/client2/1.webp", alt: "Dramatic photo of the couple under lighting" },
@@ -50,7 +48,7 @@ export const weddings = [
       { src: "/client2/5.JPG", alt: "Emotional moment with parents" },
       { src: "/client2/6.JPG", alt: "Couple seated at the mandap" },
       { src: "/client2/7.JPG", alt: "Guests cheering" },
-      { src: "/client2/8.jpg", alt: "Rakul and Rahul's dramatic entry with fireworks" },
+      { src: "/client2/8.jpg", alt: "Dramatic entry with fireworks" },
       { src: "/client2/9.JPG", alt: "Groom looking at his watch" },
       { src: "/client2/10.JPG", alt: "Bride smiling at the camera" },
     ],
@@ -58,19 +56,19 @@ export const weddings = [
       hasTestimonial: true,
       caption: "Absolutely magical!",
       coverImage: "/client2/8.jpg",
-      coverAlt: "Rakul and Rahul's dramatic entry with fireworks"
-    }
+      coverAlt: "Dramatic entry with fireworks",
+    },
   },
   {
-    slug: generateSlug("Rakul", "Rahul"),
+    slug: "rakul-rahul",
     brideName: "Rakul",
     groomName: "Rahul",
     folder: "/client2",
     featured: true,
     featuredImage: "/client2/1.webp",
-    featuredAlt: "A candid portrait of Rakul and Rahul under a floral mandap",
+    featuredAlt:
+      "A candid portrait of Rakul and Rahul under a floral mandap",
     connectingIcon: true,
-    // --- GALLERY IMAGES WITH ALT TEXT ---
     images: [
       { src: "/client2/1.JPG", alt: "Bride getting ready" },
       { src: "/client2/1.webp", alt: "Dramatic photo of the couple under lighting" },
@@ -80,7 +78,7 @@ export const weddings = [
       { src: "/client2/5.JPG", alt: "Emotional moment with parents" },
       { src: "/client2/6.JPG", alt: "Couple seated at the mandap" },
       { src: "/client2/7.JPG", alt: "Guests cheering" },
-      { src: "/client2/8.jpg", alt: "Rakul and Rahul's dramatic entry with fireworks" },
+      { src: "/client2/8.jpg", alt: "Dramatic entry with fireworks" },
       { src: "/client2/9.JPG", alt: "Groom looking at his watch" },
       { src: "/client2/10.JPG", alt: "Bride smiling at the camera" },
     ],
@@ -88,7 +86,37 @@ export const weddings = [
       hasTestimonial: true,
       caption: "Absolutely magical!",
       coverImage: "/client2/8.jpg",
-      coverAlt: "Rakul and Rahul's dramatic entry with fireworks"
-    }
-  }
+      coverAlt: "Dramatic entry with fireworks",
+    },
+  },
+  {
+    slug: "rakul-rahul",
+    brideName: "Rakul",
+    groomName: "Rahul",
+    folder: "/client2",
+    featured: true,
+    featuredImage: "/client2/1.webp",
+    featuredAlt:
+      "A candid portrait of Rakul and Rahul under a floral mandap",
+    connectingIcon: true,
+    images: [
+      { src: "/client2/1.JPG", alt: "Bride getting ready" },
+      { src: "/client2/1.webp", alt: "Dramatic photo of the couple under lighting" },
+      { src: "/client2/2.JPG", alt: "Groom on a horse for the Baraat" },
+      { src: "/client2/3.JPG", alt: "Exchange of garlands" },
+      { src: "/client2/4.JPG", alt: "Bride walking down the aisle" },
+      { src: "/client2/5.JPG", alt: "Emotional moment with parents" },
+      { src: "/client2/6.JPG", alt: "Couple seated at the mandap" },
+      { src: "/client2/7.JPG", alt: "Guests cheering" },
+      { src: "/client2/8.jpg", alt: "Dramatic entry with fireworks" },
+      { src: "/client2/9.JPG", alt: "Groom looking at his watch" },
+      { src: "/client2/10.JPG", alt: "Bride smiling at the camera" },
+    ],
+    testimonial: {
+      hasTestimonial: true,
+      caption: "Absolutely magical!",
+      coverImage: "/client2/8.jpg",
+      coverAlt: "Dramatic entry with fireworks",
+    },
+  },
 ];

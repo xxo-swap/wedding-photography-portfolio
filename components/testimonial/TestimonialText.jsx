@@ -41,11 +41,12 @@ export default function TestimonialText() {
       if (splitPara) splitPara.revert();
 
       // 4. Remove any pin-spacer elements manually (defensive - avoid DOM removeChild races)
-      const pinSpacers = Array.from(document.querySelectorAll('.pin-spacer'));
+      const pinSpacers = Array.from(document.querySelectorAll(".pin-spacer"));
       pinSpacers.forEach((spacer) => {
         try {
           // only handle spacers that contain our section
-          if (!sectionRef.current || !spacer.contains(sectionRef.current)) return;
+          if (!sectionRef.current || !spacer.contains(sectionRef.current))
+            return;
           const parent = spacer.parentNode;
           if (!parent) return;
 
@@ -62,7 +63,7 @@ export default function TestimonialText() {
           if (parent.contains(spacer)) parent.removeChild(spacer);
         } catch (err) {
           // don't throw during unmount — just log for debugging
-          console.warn('TestimonialText: pin-spacer cleanup failed', err);
+          console.warn("TestimonialText: pin-spacer cleanup failed", err);
         }
       });
     };
@@ -89,13 +90,12 @@ export default function TestimonialText() {
             scrub: true,
             pin: true,
             anticipatePin: 1,
-            
           },
         });
 
         tl.fromTo(
           splitHeading.chars,
-          { opacity: .1, y: 0 },
+          { opacity: 0.1, y: 0 },
           {
             opacity: 1,
             y: 0,
@@ -106,7 +106,7 @@ export default function TestimonialText() {
 
         tl.fromTo(
           splitPara.chars,
-          { opacity: .1, y: 0  },
+          { opacity: 0.1, y: 0 },
           {
             opacity: 1,
             y: 0,
@@ -130,22 +130,35 @@ export default function TestimonialText() {
   return (
     <section
       ref={sectionRef}
-      className="h-[70vh] md:h-screen flex flex-col items-center justify-center text-center gap-4 overflow-hidden"
+      className="relative min-h-[80vh] md:min-h-screen flex items-center justify-center px-6 md:px-12 overflow-hidden bg-gradient-to-br from-white via-bg to-primary/5"
       style={{ opacity: isReady ? 1 : 0 }}
     >
-      <h1
-        ref={headingRef}
-        className="text-2xl  md:text-5xl font-black uppercase tracking-wide whitespace-nowrap"
-      >
-        Listen to their stories.
-      </h1>
+      {/* Soft background glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full" />
+      </div>
 
-      <p
-        ref={paraRef}
-        className="text-xs md:text-lg font-black uppercase tracking-wide max-w-[50ch] md:max-w-[90ch]"
-      >
-        Every wedding leaves a memory behind. Here&apos;s what our couples carried with them.
-      </p>
+      <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center text-center gap-8 md:gap-10">
+        <span className="text-[10px] md:text-xs tracking-[0.35em] uppercase text-secondary">
+          Testimonials
+        </span>
+
+        <h1
+          ref={headingRef}
+          className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight text-primary"
+        >
+          Listen to their stories.
+        </h1>
+
+        <p
+          ref={paraRef}
+          className="text-sm md:text-lg text-secondary max-w-[45ch] md:max-w-[65ch] leading-relaxed"
+        >
+          Every wedding leaves a memory behind. Here’s what our couples carried
+          with them — moments of emotion, connection, and celebration that
+          remain long after the day has passed.
+        </p>
+      </div>
     </section>
   );
 }

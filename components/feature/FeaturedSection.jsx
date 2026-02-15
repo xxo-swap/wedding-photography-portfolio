@@ -6,8 +6,8 @@ export default function FeaturedSection({ couples }) {
     <section className="w-full">
       <div className="max-w-[1440px] mx-auto">
         <FeaturedText />
-        {couples.map((couple) => (
-          <FeaturedCouple key={couple.slug} couple={couple} />
+        {couples.map((couple, i) => (
+          <FeaturedCouple key={i} couple={couple} />
         ))}
       </div>
     </section>
