@@ -119,3 +119,28 @@ export const weddings = [
     },
   },
 ];
+
+
+
+export const scrollImages = [
+  { src: "/client2/1.webp", alt: "Couple walking hand in hand" },
+  { src: "/client2/2.webp", alt: "Bride and groom under a floral arch" },
+  { src: "/client2/3.webp", alt: "Groom on a horse for the Baraat" },
+  { src: "/client2/4.webp", alt: "Exchange of garlands" },
+  { src: "/client2/5.webp", alt: "Bride walking down the aisle" },
+  { src: "/client2/6.webp", alt: "Couple seated at the mandap" },
+]
+
+
+export const heroImages = [
+  { src: "/client2/1.webp", alt: "Couple walking hand in hand" },
+  { src: "/client2/2.webp", alt: "Bride and groom under a floral arch" },
+  { src: "/client2/3.webp", alt: "Groom on a horse for the Baraat" },
+  { src: "/client2/4.webp", alt: "Exchange of garlands" },
+  { src: "/client2/5.webp", alt: "Bride walking down the aisle" },
+  { src: "/client2/6.webp", alt: "Couple seated at the mandap" },
+  { src: "/client2/7.webp", alt: "Guests cheering" },
+  { src: "/client2/8.webp", alt: "Dramatic entry with fireworks" },
+  { src: "/client2/9.webp", alt: "Groom looking at his watch" },
+  
+]

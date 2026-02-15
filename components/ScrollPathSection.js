@@ -1,7 +1,8 @@
 "use client";
-
+import { scrollImages } from "@/src/data/weddings";
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import Image from "next/image";
 
 export default function ScrollPathSection() {
     const sectionRef = useRef(null);
@@ -124,7 +125,8 @@ export default function ScrollPathSection() {
             </svg>
 
             <div className="relative mx-auto max-w-6xl px-6 z-20">
-                {[...Array(6)].map((_, i) => (
+                {scrollImages.map((image, i) => (
+                    
                     <div key={i} className="breakpoint flex min-h-screen items-center">
                         <div className={`grid grid-cols-1 md:grid-cols-12 w-full gap-12 ${i % 2 !== 0 ? 'md:text-right' : ''}`}>
                             <div className={`col-span-1 md:col-span-5  ${i % 2 !== 0 ? 'md:col-start-8' : ''}`}>
@@ -136,7 +138,17 @@ export default function ScrollPathSection() {
                                     {i === 4 && "It works not because of technique, lighting, or equipment, but because you were truly there — and we were present enough to witness it."}
                                     {i === 5 && "Stories that are lived, not staged. Remembered."}
                                 </p>
-                                <div className="image-square mt-8 w-full aspect-square bg-primary/10 rounded-sm" />
+                                <div className="image-square relative mt-8 w-full aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-sm">
+                                    <Image
+                                    key={i}
+                                        src={image.src}
+                                        alt={image.alt}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 40vw"
+                                        className="object-cover"
+                                        priority={i === 0}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

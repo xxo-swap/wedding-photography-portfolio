@@ -24,18 +24,25 @@ function Hero1() {
       });
 
       // Parallax image
-      tl.to(imageWrapRef.current, {
-        yPercent: 20,
-        ease: "none",
-      }, 0);
+      tl.to(
+        imageWrapRef.current,
+        {
+          yPercent: 20,
+          ease: "none",
+        },
+        0
+      );
 
       // Parallax text
-      tl.to(heroTextRef.current, {
-        yPercent: -50,
-        opacity: 0,
-        ease: "none",
-      }, 0);
-
+      tl.to(
+        heroTextRef.current,
+        {
+          yPercent: -50,
+          opacity: 0,
+          ease: "none",
+        },
+        0
+      );
     }, containerRef);
 
     return () => ctx.revert();
@@ -44,34 +51,47 @@ function Hero1() {
   return (
     <div
       ref={containerRef}
-      className="relative h-screen max-w-[1440px] mx-auto overflow-hidden bg-black"
+      className="relative h-screen max-w-[1440px] mx-auto overflow-hidden bg-bg"
     >
-      {/* Background Image Container */}
-      <div
-        ref={imageWrapRef}
-        className="absolute inset-0 z-0 scale-[1.3]"
-      >
-        <Image
-          src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80"
-          alt="Wedding Hero"
-          fill
-          priority
-          className="object-cover"
+      {/* Background Video */}
+      <div ref={imageWrapRef} className="absolute inset-0 z-0 scale-[1.3]">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/heroVideo.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
         />
-        <div className="absolute inset-0 bg-black/20 z-10" />
+
+        {/* Overlay for contrast */}
+        <div className="absolute inset-0 bg-black/40 z-10" />
       </div>
 
-      {/* Hero Content */}
+      {/* Content */}
       <div
         ref={heroTextRef}
         className="relative z-30 flex flex-col items-center justify-center h-full text-center px-6"
       >
-        <h1 className="text-6xl md:text-8xl font-display text-white drop-shadow-lg">
-          Some Moments Deserve <br /> to Last Forever
+        <span className="font-ui text-xs tracking-[0.35em] uppercase text-white/70 mb-6">
+          Wedding Films
+        </span>
+
+        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.1] text-white font-light">
+          Some Moments Deserve
+          <br />
+          <span className="italic font-normal text-white/90">
+            to Last Forever
+          </span>
         </h1>
 
-        <Link href="#featured" className="mt-8">
-          <button className="px-8 py-3 rounded-full font-ui bg-white text-black font-medium hover:bg-opacity-90 transition-all">
+        <p className="mt-6 max-w-2xl text-sm md:text-base text-white/70 leading-relaxed">
+          Capturing emotion, presence, and atmosphere — not just events, but the
+          feeling that lives beyond the day.
+        </p>
+
+        <Link href="#featured" className="mt-10">
+          <button className="px-10 py-4 rounded-full font-ui text-xs tracking-widest uppercase border border-white/40 text-white hover:bg-white hover:text-primary transition-all duration-500">
             Explore Stories
           </button>
         </Link>

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap, Flip, ScrollTrigger } from "@/lib/gsap";
-import heroImages from "../data";
+import {heroImages} from "@/src/data/weddings";
 
 
 export default function Hero() {
@@ -110,7 +110,7 @@ export default function Hero() {
               className={`relative overflow-hidden ${gridClasses[index]}`}
             >
               <Image
-                src={img.url}
+                src={img.src}
                 alt={img.alt}
                 fill
                 sizes="33vw"
